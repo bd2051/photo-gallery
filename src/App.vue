@@ -15,24 +15,27 @@
       </v-btn>
     </v-toolbar>
 
-    <v-content>
-      <HelloWorld/>
+    <v-content ref="content">
+      <gallery
+      />
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import Gallery from './components/Gallery'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Gallery
   },
   data () {
     return {
       //
     }
+  },
+  mounted() {
   }
 }
 </script>
