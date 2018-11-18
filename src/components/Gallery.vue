@@ -13,11 +13,14 @@
                 >
                     <v-layout align-center justify-center row fill-height>
                         <v-flex>
-                            <img :src="photo.src" class="d-block ma-auto" style="max-width: 90vw">
+                            <img :src="photo.src" class="d-block ma-auto" style="max-width: 90vw; max-height: 75vh">
                         </v-flex>
                     </v-layout>
                 </v-carousel-item>
             </v-carousel>
+            <!--<v-card-text>-->
+                <!--<div class="white&#45;&#45;text text-md-center">тег1, тег2, тег3, тег4, тег5</div>-->
+            <!--</v-card-text>-->
             <v-layout align-center justify-center row fill-height>
                 <v-pagination
                         v-model="currentPage"
@@ -70,40 +73,44 @@
                         @click="() => {$emit('isDetail', true)}"
 
                 >
-                    <v-card
-                            ref="element"
-                    >
-                        <v-img
-                                :src="photo.src"
-                                :height="MIN_PHOTO_WIDTH"
+                    <v-hover>
+                        <v-card
+                                slot-scope="{ hover }"
+                                :style="`border: ${hover ? 2 : 0}px solid white; margin: -${hover ? 2 : 0}px;`"
+                                ref="element"
                         >
-                            <v-container
-                                    fill-height
-                                    fluid
-                                    pa-2
+                            <v-img
+                                    :src="photo.src"
+                                    :height="MIN_PHOTO_WIDTH"
                             >
-                                <v-layout fill-height>
-                                    <v-flex xs12 align-end flexbox>
-                                        <div class="white--text">18/11/2018</div>
-                                        <div class="white--text">filename</div>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                        </v-img>
+                                <v-container
+                                        fill-height
+                                        fluid
+                                        pa-2
+                                >
+                                    <v-layout fill-height>
+                                        <v-flex xs12 align-end flexbox>
+                                            <div class="white--text">18/11/2018</div>
+                                            <div class="white--text">filename</div>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-container>
+                            </v-img>
 
-                        <!--<v-card-actions>-->
-                            <!--<v-spacer></v-spacer>-->
-                            <!--<v-btn icon>-->
-                                <!--<v-icon>favorite</v-icon>-->
-                            <!--</v-btn>-->
-                            <!--<v-btn icon>-->
-                                <!--<v-icon>bookmark</v-icon>-->
-                            <!--</v-btn>-->
-                            <!--<v-btn icon>-->
-                                <!--<v-icon>share</v-icon>-->
-                            <!--</v-btn>-->
-                        <!--</v-card-actions>-->
-                    </v-card>
+                            <!--<v-card-actions>-->
+                                <!--<v-spacer></v-spacer>-->
+                                <!--<v-btn icon>-->
+                                    <!--<v-icon>favorite</v-icon>-->
+                                <!--</v-btn>-->
+                                <!--<v-btn icon>-->
+                                    <!--<v-icon>bookmark</v-icon>-->
+                                <!--</v-btn>-->
+                                <!--<v-btn icon>-->
+                                    <!--<v-icon>share</v-icon>-->
+                                <!--</v-btn>-->
+                            <!--</v-card-actions>-->
+                        </v-card>
+                    </v-hover>
                 </v-flex>
             </v-layout>
         </v-container>
