@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="background-color: black;">
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Vuetify</span>

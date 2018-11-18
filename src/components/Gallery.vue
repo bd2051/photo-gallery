@@ -1,14 +1,18 @@
 <template>
     <v-container v-bind="{ ['grid-list-xs']: true }" fluid>
-        <v-layout row wrap ref="layout">
-            <v-flex
+        <v-layout row wrap align-content-start ref="layout">
+            <v-flex :style="mediaStyle"
+                    :grow="false"
                     v-for="(photo, index) in photos"
-                    v-bind="{ [`xs${computedFlex}`]: true }"
                     :key="index"
+
             >
-                <v-card ref="element">
+                <v-card
+                        ref="element"
+                >
                     <v-img
-                            :src="`https://unsplash.it/150/300?image=${Math.floor(Math.random() * 100) + 1}`"
+                            :src="photo.src"
+                            :height="MIN_PHOTO_WIDTH"
                     >
                         <v-container
                                 fill-height
@@ -46,6 +50,7 @@
     data: () => ({
         MIN_PHOTO_WIDTH: 250,
         FLEX_K: 12,
+        mediaStyle: '',
         width: {
             width: 0
         },
@@ -69,18 +74,25 @@
         ]
     }),
     created () {
-        console.log(this.$refs)
+        const vm = this
+        let mql = {}
+        for (let i = this.MIN_PHOTO_WIDTH; i < 4000; i+= this.MIN_PHOTO_WIDTH) {
+            mql[i] = window.matchMedia(`(min-width: ${i}px)`);
+            mql[i].onchange = function () {
+                let elementWidth;
+                if ( window.matchMedia(`(min-width: ${i}px)`).matches) elementWidth = 100 / (i / vm.MIN_PHOTO_WIDTH)
+                else elementWidth = 100 / ((i - vm.MIN_PHOTO_WIDTH) / vm.MIN_PHOTO_WIDTH)
+                vm.mediaStyle = `width: ${elementWidth}%`
+            }
+        }
+        vm.mediaStyle = `width: ${(100 / (document.body.clientWidth / this.MIN_PHOTO_WIDTH))}%`
     },
     computed: {
-        computedFlex() {
-            return Math.floor(this.FLEX_K / (screen.width / this.MIN_PHOTO_WIDTH))
-        }
     },
     watch: {
     }
   }
 </script>
 
-<style>
-
+<style scoped>
 </style>
