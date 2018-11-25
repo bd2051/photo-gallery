@@ -22,19 +22,22 @@ const store = new Vuex.Store({
       photos: []
     },
     actions: {
-        addPhotos({commit}) {
-          axios.get(API.getPhotos).then((response) => {
-              console.log(response)
-              let photos = [];
-              if (TEST) for(let i = 0; i < 50; i++ ) photos.push(testPhotos())
-              else photos = response.data.photos
-              commit('setPhotos', photos)
+        addPhotos({commit, lastNumber = 0}) {
+            return new Promise((resolve) => {
+                axios.get(API.getPhotos, {params: {number: lastNumber}}).then((response) => {
+                    console.log(response)
+                    let photos = [];
+                    if (TEST) for (let i = 0; i < 50; i++) photos.push(testPhotos())
+                    else photos = response.data.photos
+                    commit('setPhotos', photos)
+                    resolve()
+                })
             })
         }
     },
     mutations: {
         setPhotos(state, photos) {
-            state.photos = (photos)
+            state.photos = state.photos.concat(photos)
         }
     },
     getters: {
