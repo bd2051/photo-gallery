@@ -114,6 +114,7 @@ export default {
     props: ['isDetail'],
     data: () => ({
         MIN_PHOTO_WIDTH: 250,
+        mediaStyle: '',
         width: null,
     }),
     computed: {
@@ -142,6 +143,7 @@ export default {
         const vm = this
         vm.mediaStyle = `width: ${(100 / (Math.floor(document.body.clientWidth / vm.MIN_PHOTO_WIDTH)))}%`
         window.onresize = function (evt) {
+            console.log(evt.target.innerWidth, (100 / (Math.floor(evt.target.innerWidth / vm.MIN_PHOTO_WIDTH))) )
             vm.mediaStyle = `width: ${(100 / (Math.floor(evt.target.innerWidth / vm.MIN_PHOTO_WIDTH)))}%`
         }
     },
