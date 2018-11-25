@@ -12,7 +12,7 @@ const testPhotos = function () {
         title: `Photo${Math.floor(Math.random() * 100) + 1}`,
         normalSrc: src,
         minSrc: src,
-        date: Date.now()
+        date: Date.now() - Math.floor(Math.random() * 100000000000)
     }
 }
 
@@ -31,7 +31,6 @@ const store = new Vuex.Store({
         addPhotos({commit, lastNumber = 0}) {
             return new Promise((resolve, reject) => {
                 axios.get(API.getPhotos, {params: {number: lastNumber}}).then((response) => {
-                    console.log(response)
                     let photos = [];
                     if (TEST) for (let i = 0; i < 50; i++) photos.push(testPhotos())
                     else photos = response.data.photos

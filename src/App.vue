@@ -1,7 +1,7 @@
 <template>
   <v-app style="background-color: black;">
     <v-toolbar app style="background-color: black;">
-      <v-btn v-if="isDetail" flat icon color="white" @click="isDetail=false">
+      <v-btn v-if="isDetail" flat icon color="white" @click="() => isDetail=false">
         <v-icon>arrow_back</v-icon>
       </v-btn>
       <v-toolbar-title  class="headline text-uppercase" style="margin-right: auto !important">
@@ -93,7 +93,8 @@
     <v-content ref="content">
       <gallery
               :isDetail="isDetail"
-              @isDetail="(val) => {isDetail = val}"
+              @isDetail="(val) => isDetail = val"
+              @scroll="(val) => this.scroll = val"
       />
     </v-content>
   </v-app>
@@ -113,7 +114,8 @@ export default {
     return {
       isDetail: false,
       filterDialog: false,
-      editerDialog: false
+      editerDialog: false,
+      scroll: null
     }
   },
   computed: {
@@ -126,7 +128,12 @@ export default {
      }
   },
   mounted() {
-      console.log(this, this.notes)
+  },
+  updated() {
+      if(this.scroll) {
+          this.$vuetify.goTo(this.scroll)
+          this.scroll = null
+      }
   }
 }
 </script>

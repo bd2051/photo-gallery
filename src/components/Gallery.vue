@@ -1,28 +1,44 @@
 <template>
     <div>
-        <div v-show="isDetail">
-            <v-carousel
-                    hide-delimiters
-                    :cycle="false"
-                    :height="'80vh'"
-                    v-model="currentIndex"
-                    ref="carousel"
-            >
-                <v-carousel-item
-                        v-for="(photo, index) in photos"
-                        :key="'a'+index"
+        <v-container
+            v-show="isDetail"
+            fluid
+        >
+                <v-layout
+                        v-if="currentPage !== photos.length"
+                        align-center
+                        justify-center
+                        row fill-height
+                        style="height: 90vh"
                 >
-                    <v-layout align-center justify-center row fill-height>
-                        <v-flex>
-                            <img :src="photo.normalSrc" class="d-block ma-auto" style="max-width: 90vw; max-height: 75vh">
-                        </v-flex>
-                    </v-layout>
-                </v-carousel-item>
+                    <v-btn
+                            absolute
+                            dark
+                            fab
+                            left
+                            color="transparent"
+                            @click="() => this.currentPage--"
+                    >
+                        <v-icon large>chevron_left</v-icon>
+                    </v-btn>
+                    <v-flex>
+                        <img :src="photos[currentIndex] ? photos[currentIndex].normalSrc : ''" class="d-block ma-auto" style="max-width: 95vw; max-height: 90vh">
+                    </v-flex>
+                    <v-btn
+                            absolute
+                            dark
+                            fab
+                            right
+                            color="transparent"
+                            @click="() => this.currentPage++"
+                    >
+                        <v-icon large>chevron_right</v-icon>
+                    </v-btn>
+                </v-layout>
                 <infinite-loading
                         v-if="currentPage === photos.length"
                         @infinite="infiniteHandler"
                 ></infinite-loading>
-            </v-carousel>
             <!--<v-card-text>-->
                 <!--<div class="white&#45;&#45;text text-md-center">тег1, тег2, тег3, тег4, тег5</div>-->
             <!--</v-card-text>-->
@@ -35,7 +51,7 @@
                         :color="'success'"
                 ></v-pagination>
             </v-layout>
-        </div>
+        </v-container>
 
         <v-container
                 v-show="!isDetail"
@@ -129,37 +145,21 @@ export default {
             vm.mediaStyle = `width: ${(100 / (Math.floor(evt.target.innerWidth / vm.MIN_PHOTO_WIDTH)))}%`
         }
     },
-    mounted() {
-        const vm = this
-        const oldNext = this.$refs.carousel.next
-        const oldPrev = this.$refs.carousel.prev
-        const newNext = function() {
-            if (vm.currentPage === vm.photos.length) return
-            else oldNext()
-        }
-        const newPrev = function() {
-            if (vm.currentIndex === 0) return
-            else oldPrev()
-        }
-        this.$refs.carousel.next = newNext
-        this.$refs.carousel.prev = newPrev
-    },
+    mounted() {},
     methods: {
         ...mapMutations(['setCurrentPage']),
         infiniteHandler ($state) {
            const length = this.photos.length
-           console.log(Date.now(), length)
            this.$store.dispatch('addPhotos', {amount: length}).then(() => {
                if(length === this.photos.length) $state.complete()
                else $state.loaded()
-               console.log(Date.now(), $state)
            }).catch(() => {
-               console.log('ошибка')
                $state.error()
            })
         },
         onClickCard (index) {
            this.$emit('isDetail', true)
+           this.$emit('scroll', window.scrollY)
            this.currentIndex = index
         },
         convertPhotoDate (photo) {return convertPhotoDate(photo)}
