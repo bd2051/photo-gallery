@@ -42,15 +42,15 @@
             <!--<v-card-text>-->
                 <!--<div class="white&#45;&#45;text text-md-center">тег1, тег2, тег3, тег4, тег5</div>-->
             <!--</v-card-text>-->
-            <v-layout align-center justify-center row fill-height>
-                <v-pagination
-                        v-model="currentPage"
-                        :length="photos.length"
-                        circle
-                        dark
-                        :color="'success'"
-                ></v-pagination>
-            </v-layout>
+            <!--<v-layout align-center justify-center row fill-height>-->
+                <!--<v-pagination-->
+                        <!--v-model="currentPage"-->
+                        <!--:length="photos.length"-->
+                        <!--circle-->
+                        <!--dark-->
+                        <!--:color="'success'"-->
+                <!--&gt;</v-pagination>-->
+            <!--</v-layout>-->
         </v-container>
 
         <v-container

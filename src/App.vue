@@ -1,102 +1,69 @@
 <template>
   <v-app style="background-color: black;">
-    <v-toolbar app style="background-color: black;">
-      <v-btn v-if="isDetail" flat icon color="white" @click="() => isDetail=false">
-        <v-icon>arrow_back</v-icon>
-      </v-btn>
-      <v-toolbar-title  class="headline text-uppercase" style="margin-right: auto !important">
-          <div v-if="isDetail">
-              <span class="font-weight-light white--text">{{ currentPageDate }} {{ currentPageTitle }}</span>
-          </div>
-          <div v-else>
-              <span class="white--text">фото</span>
-              <span class="font-weight-light white--text">альбом</span>
-          </div>
-       </v-toolbar-title>
-      <v-dialog v-if="isDetail"
-                v-model="editerDialog"
-      >
-          <v-btn slot="activator" style="margin-left: auto !important" flat icon color="white">
-            <v-icon>edit</v-icon>
+      <v-toolbar app style="background-color: black;">
+          <v-toolbar-title  class="headline text-uppercase" style="margin-right: auto !important">
+              <div v-if="isDetail">
+                  <span class="font-weight-light white--text">{{ currentPageDate }} {{ currentPageTitle }}</span>
+              </div>
+              <div v-else>
+                  <span class="white--text">фото</span>
+                  <span class="font-weight-light white--text">альбом</span>
+              </div>
+          </v-toolbar-title>
+
+
+          <v-dialog
+                  v-if="isDetail"
+                  v-model="deleteDialog"
+          >
+              <v-btn slot="activator" flat icon color="white">
+                  <v-icon>delete</v-icon>
+              </v-btn>
+              <delete-photo-modal
+                      @deleteDialog="() => this.deleteDialog = false"
+              />
+          </v-dialog>
+
+
+          <v-dialog
+                  v-if="isDetail"
+                  v-model="editerDialog"
+          >
+              <v-btn slot="activator" flat icon color="white">
+                  <v-icon>edit</v-icon>
+              </v-btn>
+              <editer-modal
+                      @editerDialog="() => this.editerDialog = false"
+              />
+          </v-dialog>
+
+
+          <v-dialog
+                  v-if="!isDetail"
+                  v-model="filterDialog"
+          >
+              <v-btn slot="activator" flat icon color="white">
+                  <v-icon>search</v-icon>
+              </v-btn>
+              <filter-modal
+                      @filterDialog="() => this.filterDialog = false"
+              />
+          </v-dialog>
+
+
+          <v-btn v-if="isDetail" flat icon color="white" @click="() => isDetail=false">
+              <v-icon>close</v-icon>
           </v-btn>
+      </v-toolbar>
 
-          <v-card>
-              <v-card-title
-                      class="headline grey lighten-2"
-                      primary-title
-              >
-                  Редактировать
-              </v-card-title>
 
-              <v-card-text>
-                  Здесь будут поля для редактирования
-              </v-card-text>
-
-              <v-divider></v-divider>
-
-              <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                          color="success"
-                          flat
-                          @click="editerDialog = false"
-                  >
-                      Ок
-                  </v-btn>
-                  <v-btn
-                          color="error"
-                          flat
-                          @click="editerDialog = false"
-                  >
-                      Отмена
-                  </v-btn>
-              </v-card-actions>
-          </v-card>
-
-      </v-dialog>
-      <v-dialog
-                v-model="filterDialog"
-      >
-          <v-btn slot="activator" flat icon color="white">
-            <v-icon>search</v-icon>
-          </v-btn>
-
-          <v-card>
-              <v-card-title
-                      class="headline grey lighten-2"
-                      primary-title
-              >
-                  Фильтр
-              </v-card-title>
-
-              <v-card-text>
-                  Здесь будут поля фильтра
-              </v-card-text>
-
-              <v-divider></v-divider>
-
-              <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                          color="success"
-                          flat
-                          @click="filterDialog = false"
-                  >
-                      Ок
-                  </v-btn>
-              </v-card-actions>
-          </v-card>
-
-      </v-dialog>
-    </v-toolbar>
-
-    <v-content ref="content">
-      <gallery
+      <v-content ref="content">
+          <gallery
               :isDetail="isDetail"
               @isDetail="(val) => isDetail = val"
-              @scroll="(val) => this.scroll = val"
-      />
-    </v-content>
+              @scroll="(val) => scroll = val"
+          />
+      </v-content>
   </v-app>
 </template>
 
@@ -104,28 +71,35 @@
 import { mapGetters } from 'vuex';
 import { convertPhotoDate } from './helpers.js'
 import Gallery from './components/Gallery'
+import FilterModal from './components/modal/filter'
+import EditerModal from './components/modal/editer'
+import DeletePhotoModal from './components/modal/deletePhoto'
 
 export default {
   name: 'App',
   components: {
-    Gallery
+      FilterModal,
+      EditerModal,
+      DeletePhotoModal,
+      Gallery
   },
   data () {
-    return {
-      isDetail: false,
-      filterDialog: false,
-      editerDialog: false,
-      scroll: null
-    }
+      return {
+          isDetail: false,
+          filterDialog: false,
+          editerDialog: false,
+          deleteDialog: false,
+          scroll: null
+      }
   },
   computed: {
-     ...mapGetters(['getPhotos', 'getCurrentPage']),
-     currentPageTitle () {
-         return this.getPhotos[this.getCurrentPage - 1].title
-     },
-     currentPageDate () {
-         return convertPhotoDate(this.getPhotos[this.getCurrentPage - 1])
-     }
+      ...mapGetters(['getPhotos', 'getCurrentPage']),
+      currentPageTitle () {
+          return this.getPhotos[this.getCurrentPage - 1].title
+      },
+      currentPageDate () {
+          return convertPhotoDate(this.getPhotos[this.getCurrentPage - 1])
+      }
   },
   mounted() {
   },
@@ -134,6 +108,8 @@ export default {
           this.$vuetify.goTo(this.scroll)
           this.scroll = null
       }
+  },
+  methods: {
   }
 }
 </script>
