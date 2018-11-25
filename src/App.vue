@@ -21,12 +21,81 @@
               <span class="font-weight-light white--text">альбом</span>
           </div>
        </v-toolbar-title>
-      <v-btn v-if="isDetail" style="margin-left: auto !important" flat icon color="white">
-        <v-icon>edit</v-icon>
-      </v-btn>
-      <v-btn flat icon color="white">
-        <v-icon>search</v-icon>
-      </v-btn>
+      <v-dialog v-if="isDetail"
+                v-model="editerDialog"
+      >
+          <v-btn slot="activator" style="margin-left: auto !important" flat icon color="white">
+            <v-icon>edit</v-icon>
+          </v-btn>
+
+          <v-card>
+              <v-card-title
+                      class="headline grey lighten-2"
+                      primary-title
+              >
+                  Редактировать
+              </v-card-title>
+
+              <v-card-text>
+                  Здесь будут поля для редактирования
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                          color="success"
+                          flat
+                          @click="editerDialog = false"
+                  >
+                      Ок
+                  </v-btn>
+                  <v-btn
+                          color="error"
+                          flat
+                          @click="editerDialog = false"
+                  >
+                      Отмена
+                  </v-btn>
+              </v-card-actions>
+          </v-card>
+
+      </v-dialog>
+      <v-dialog
+                v-model="filterDialog"
+      >
+          <v-btn slot="activator" flat icon color="white">
+            <v-icon>search</v-icon>
+          </v-btn>
+
+          <v-card>
+              <v-card-title
+                      class="headline grey lighten-2"
+                      primary-title
+              >
+                  Фильтр
+              </v-card-title>
+
+              <v-card-text>
+                  Здесь будут поля фильтра
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                          color="success"
+                          flat
+                          @click="filterDialog = false"
+                  >
+                      Ок
+                  </v-btn>
+              </v-card-actions>
+          </v-card>
+
+      </v-dialog>
     </v-toolbar>
 
     <v-content ref="content">
@@ -49,9 +118,14 @@ export default {
   data () {
     return {
       isDetail: false,
+      filterDialog: false,
+      editerDialog: false
     }
   },
+  computed: {
+  },
   mounted() {
+      console.log(this, this.notes)
   }
 }
 </script>
