@@ -14,7 +14,7 @@
                 >
                     <v-layout align-center justify-center row fill-height>
                         <v-flex>
-                            <img :src="photo.src" class="d-block ma-auto" style="max-width: 90vw; max-height: 75vh">
+                            <img :src="photo.normalSrc" class="d-block ma-auto" style="max-width: 90vw; max-height: 75vh">
                         </v-flex>
                     </v-layout>
                 </v-carousel-item>
@@ -63,7 +63,7 @@
                                 ref="element"
                         >
                             <v-img
-                                    :src="photo.src"
+                                    :src="photo.minSrc"
                                     :height="MIN_PHOTO_WIDTH"
                             >
                                 <v-container
@@ -73,8 +73,8 @@
                                 >
                                     <v-layout fill-height>
                                         <v-flex xs12 align-end flexbox>
-                                            <div class="white--text">18/11/2018</div>
-                                            <div class="white--text">filename</div>
+                                            <div class="white--text">{{ convertPhotoDate(photo) }}</div>
+                                            <div class="white--text">{{ photo.title }}</div>
                                         </v-flex>
                                     </v-layout>
                                 </v-container>
@@ -91,29 +91,27 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
+import { mapGetters, mapMutations } from 'vuex';
+import { convertPhotoDate } from '../helpers.js'
 
 export default {
     props: ['isDetail'],
     data: () => ({
         MIN_PHOTO_WIDTH: 250,
-        FLEX_K: 12,
-        mediaStyle: '',
-        currentPage: 1,
         width: null,
     }),
-    created () {
-        const vm = this
-        vm.mediaStyle = `width: ${(100 / (Math.floor(document.body.clientWidth / vm.MIN_PHOTO_WIDTH)))}%`
-        window.onresize = function (evt) {
-            vm.mediaStyle = `width: ${(100 / (Math.floor(evt.target.innerWidth / vm.MIN_PHOTO_WIDTH)))}%`
-        }
-    },
     computed: {
-        ...mapGetters(['getPhotos']),
+        ...mapGetters(['getPhotos', 'getCurrentPage']),
         photos () {
             return this.getPhotos
+        },
+        currentPage: {
+            get () {
+                return this.getCurrentPage
+            },
+            set (val) {
+                this.setCurrentPage(val)
+            }
         },
         currentIndex: {
             get () {
@@ -123,6 +121,13 @@ export default {
                 this.currentPage = val + 1
             }
         },
+    },
+    created () {
+        const vm = this
+        vm.mediaStyle = `width: ${(100 / (Math.floor(document.body.clientWidth / vm.MIN_PHOTO_WIDTH)))}%`
+        window.onresize = function (evt) {
+            vm.mediaStyle = `width: ${(100 / (Math.floor(evt.target.innerWidth / vm.MIN_PHOTO_WIDTH)))}%`
+        }
     },
     mounted() {
         const vm = this
@@ -140,6 +145,7 @@ export default {
         this.$refs.carousel.prev = newPrev
     },
     methods: {
+        ...mapMutations(['setCurrentPage']),
         infiniteHandler ($state) {
            const length = this.photos.length
            console.log(Date.now(), length)
@@ -155,7 +161,8 @@ export default {
         onClickCard (index) {
            this.$emit('isDetail', true)
            this.currentIndex = index
-        }
+        },
+        convertPhotoDate (photo) {return convertPhotoDate(photo)}
     }
 }
 </script>

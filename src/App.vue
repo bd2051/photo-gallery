@@ -1,20 +1,12 @@
 <template>
   <v-app style="background-color: black;">
     <v-toolbar app style="background-color: black;">
-      <!--<v-spacer></v-spacer>-->
-      <!--<v-btn-->
-        <!--flat-->
-        <!--href="https://github.com/vuetifyjs/vuetify/releases/latest"-->
-        <!--target="_blank"-->
-      <!--&gt;-->
-        <!--<span class="mr-2">Latest Release</span>-->
-      <!--</v-btn>-->11
       <v-btn v-if="isDetail" flat icon color="white" @click="isDetail=false">
         <v-icon>arrow_back</v-icon>
       </v-btn>
       <v-toolbar-title  class="headline text-uppercase" style="margin-right: auto !important">
           <div v-if="isDetail">
-              <span class="font-weight-light white--text">18/11/2018 Filename</span>
+              <span class="font-weight-light white--text">{{ currentPageDate }} {{ currentPageTitle }}</span>
           </div>
           <div v-else>
               <span class="white--text">фото</span>
@@ -108,6 +100,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { convertPhotoDate } from './helpers.js'
 import Gallery from './components/Gallery'
 
 export default {
@@ -123,6 +117,13 @@ export default {
     }
   },
   computed: {
+     ...mapGetters(['getPhotos', 'getCurrentPage']),
+     currentPageTitle () {
+         return this.getPhotos[this.getCurrentPage - 1].title
+     },
+     currentPageDate () {
+         return convertPhotoDate(this.getPhotos[this.getCurrentPage - 1])
+     }
   },
   mounted() {
       console.log(this, this.notes)

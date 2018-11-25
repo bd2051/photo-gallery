@@ -6,10 +6,15 @@ Vue.use(Vuex)
 
 const TEST = true
 
-const testPhotos = function () {return {
-    title: `Photo${Math.floor(Math.random() * 100) + 1}`,
-    src: `https://unsplash.it/${Math.floor(Math.random() * 1000) + 200}/${Math.floor(Math.random() * 1000) + 200}?image=${Math.floor(Math.random() * 100) + 1}`
-}}
+const testPhotos = function () {
+    const src = `https://unsplash.it/${Math.floor(Math.random() * 1000) + 200}/${Math.floor(Math.random() * 1000) + 200}?image=${Math.floor(Math.random() * 100) + 1}`
+    return {
+        title: `Photo${Math.floor(Math.random() * 100) + 1}`,
+        normalSrc: src,
+        minSrc: src,
+        date: Date.now()
+    }
+}
 
 axios.defaults.baseURL = 'http://httpbin.org/'
 
@@ -19,7 +24,8 @@ const API = {
 
 const store = new Vuex.Store({
     state: {
-      photos: []
+      photos: [],
+      currentPage: 1
     },
     actions: {
         addPhotos({commit, lastNumber = 0}) {
@@ -27,7 +33,7 @@ const store = new Vuex.Store({
                 axios.get(API.getPhotos, {params: {number: lastNumber}}).then((response) => {
                     console.log(response)
                     let photos = [];
-                    if (TEST) for (let i = 0; i < 15; i++) photos.push(testPhotos())
+                    if (TEST) for (let i = 0; i < 50; i++) photos.push(testPhotos())
                     else photos = response.data.photos
                     commit('setPhotos', photos)
                     resolve()
@@ -38,11 +44,17 @@ const store = new Vuex.Store({
     mutations: {
         setPhotos(state, photos) {
             state.photos = state.photos.concat(photos)
+        },
+        setCurrentPage(state, page) {
+            state.currentPage = page
         }
     },
     getters: {
         getPhotos(state) {
             return state.photos
+        },
+        getCurrentPage(state) {
+            return state.currentPage
         }
     },
 })
