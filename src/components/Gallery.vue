@@ -78,13 +78,15 @@
                     </v-hover>
                 </v-flex>
             </v-layout>
-            <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+            <infinite-loading
+                    @infinite="infiniteHandler"
+            ></infinite-loading>
         </v-container>
     </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 
 export default {
@@ -119,12 +121,17 @@ export default {
     },
     methods: {
         infiniteHandler ($state) {
-           console.log(Date.now(), this.photos.length)
-           this.$store.dispatch('addPhotos', {amount: this.photos.length}).then(() => {
-               $state.loaded()
-               console.log(Date.now(), $state.loaded)
+           const length = this.photos.length
+           console.log(Date.now(), length)
+           this.$store.dispatch('addPhotos', {amount: length}).then(() => {
+               if(length === this.photos.length) $state.complete()
+               else $state.loaded()
+               console.log(Date.now(), $state)
+           }).catch(() => {
+               console.log('ошибка')
+               $state.error()
            })
-        }
+        },
     }
 }
 </script>

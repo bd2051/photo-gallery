@@ -23,7 +23,7 @@ const store = new Vuex.Store({
     },
     actions: {
         addPhotos({commit, lastNumber = 0}) {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 axios.get(API.getPhotos, {params: {number: lastNumber}}).then((response) => {
                     console.log(response)
                     let photos = [];
@@ -31,7 +31,7 @@ const store = new Vuex.Store({
                     else photos = response.data.photos
                     commit('setPhotos', photos)
                     resolve()
-                })
+                }).catch(() => reject())
             })
         }
     },

@@ -7,7 +7,15 @@ import InfiniteLoading from 'vue-infinite-loading'
 import store from '../src/store.js'
 
 Vue.config.productionTip = false
-Vue.use(InfiniteLoading, { /* options */ })
+Vue.use(InfiniteLoading, {
+  props: {
+      spinner: 'circles'
+  },
+  slots: {
+    error: 'Усп, Что-то пошло не так :(',
+    noMore: 'Все фотки загружены :)'
+  },
+})
 new Vue({
   render: h => h(App),
   store,
