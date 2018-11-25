@@ -1,11 +1,12 @@
 <template>
     <div>
-        <div v-if="isDetail">
+        <div v-show="isDetail">
             <v-carousel
                     hide-delimiters
                     :cycle="false"
                     :height="'80vh'"
                     v-model="currentIndex"
+                    ref="carousel"
             >
                 <v-carousel-item
                         v-for="(photo, index) in photos"
@@ -17,6 +18,10 @@
                         </v-flex>
                     </v-layout>
                 </v-carousel-item>
+                <infinite-loading
+                        v-if="currentPage === photos.length"
+                        @infinite="infiniteHandler"
+                ></infinite-loading>
             </v-carousel>
             <!--<v-card-text>-->
                 <!--<div class="white&#45;&#45;text text-md-center">тег1, тег2, тег3, тег4, тег5</div>-->
@@ -33,7 +38,7 @@
         </div>
 
         <v-container
-                v-else
+                v-show="!isDetail"
                 v-bind="{ ['grid-list-xs']: true }"
                 fluid
         >
@@ -48,7 +53,7 @@
                         v-for="(photo, index) in photos"
                         :key="index"
                         tag="a"
-                        @click="() => {$emit('isDetail', true)}"
+                        @click="onClickCard(index)"
 
                 >
                     <v-hover>
@@ -119,6 +124,21 @@ export default {
             }
         },
     },
+    mounted() {
+        const vm = this
+        const oldNext = this.$refs.carousel.next
+        const oldPrev = this.$refs.carousel.prev
+        const newNext = function() {
+            if (vm.currentPage === vm.photos.length) return
+            else oldNext()
+        }
+        const newPrev = function() {
+            if (vm.currentIndex === 0) return
+            else oldPrev()
+        }
+        this.$refs.carousel.next = newNext
+        this.$refs.carousel.prev = newPrev
+    },
     methods: {
         infiniteHandler ($state) {
            const length = this.photos.length
@@ -132,6 +152,10 @@ export default {
                $state.error()
            })
         },
+        onClickCard (index) {
+           this.$emit('isDetail', true)
+           this.currentIndex = index
+        }
     }
 }
 </script>
