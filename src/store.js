@@ -34,7 +34,7 @@ const store = new Vuex.Store({
                 axios.get(API.getPhotos, {params: {number: lastNumber}}).then((response) => {
                     if (TEST) console.log(response)
                     let photos = [];
-                    if (TEST) for (let i = 0; i < 50; i++) photos.push(testPhotos())
+                    if (TEST) for (let i = 0; i < 14; i++) photos.push(testPhotos())
                     else photos = response.data.photos
                     commit('setPhotos', photos)
                     resolve()

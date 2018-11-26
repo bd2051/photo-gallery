@@ -1,11 +1,11 @@
 <template>
     <div>
         <v-container
+            style="position: fixed; z-index: 100; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 1);"
             v-show="isDetail"
             fluid
         >
                 <v-layout
-                        v-if="currentPage !== photos.length"
                         align-center
                         justify-center
                         row fill-height
@@ -39,25 +39,13 @@
                         v-if="currentPage === photos.length"
                         @infinite="infiniteHandler"
                 ></infinite-loading>
-            <!--<v-card-text>-->
-                <!--<div class="white&#45;&#45;text text-md-center">тег1, тег2, тег3, тег4, тег5</div>-->
-            <!--</v-card-text>-->
-            <!--<v-layout align-center justify-center row fill-height>-->
-                <!--<v-pagination-->
-                        <!--v-model="currentPage"-->
-                        <!--:length="photos.length"-->
-                        <!--circle-->
-                        <!--dark-->
-                        <!--:color="'success'"-->
-                <!--&gt;</v-pagination>-->
-            <!--</v-layout>-->
         </v-container>
 
         <v-container
-                v-show="!isDetail"
                 v-bind="{ ['grid-list-xs']: true }"
                 fluid
         >
+            <scroll-lock :lock="false" :body-lock="isDetail">
             <v-layout
                     row
                     wrap
@@ -99,6 +87,7 @@
                     </v-hover>
                 </v-flex>
             </v-layout>
+            </scroll-lock>
             <infinite-loading
                     @infinite="infiniteHandler"
             ></infinite-loading>
@@ -127,7 +116,7 @@ export default {
                 return this.getCurrentPage
             },
             set (val) {
-                this.setCurrentPage(val)
+                if (val > 0 && val < this.photos.length + 1) this.setCurrentPage(val) //TODO отрицательные страницы
             }
         },
         currentIndex: {
@@ -143,7 +132,6 @@ export default {
         const vm = this
         vm.mediaStyle = `width: ${(100 / (Math.floor(document.body.clientWidth / vm.MIN_PHOTO_WIDTH)))}%`
         window.onresize = function (evt) {
-            console.log(evt.target.innerWidth, (100 / (Math.floor(evt.target.innerWidth / vm.MIN_PHOTO_WIDTH))) )
             vm.mediaStyle = `width: ${(100 / (Math.floor(evt.target.innerWidth / vm.MIN_PHOTO_WIDTH)))}%`
         }
     },
@@ -161,7 +149,6 @@ export default {
         },
         onClickCard (index) {
            this.$emit('isDetail', true)
-           this.$emit('scroll', window.scrollY)
            this.currentIndex = index
         },
         convertPhotoDate (photo) {return convertPhotoDate(photo)}

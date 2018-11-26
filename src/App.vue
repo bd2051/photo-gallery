@@ -61,7 +61,6 @@
           <gallery
               :isDetail="isDetail"
               @isDetail="(val) => isDetail = val"
-              @scroll="(val) => scroll = val"
           />
       </v-content>
   </v-app>
