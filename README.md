@@ -1,16 +1,18 @@
 # photo-gallery
 
 ## Project setup
+
+Установить зависимости
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+Запуск на локалке
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+Сделать релизы
 ```
 npm run build
 ```
