@@ -4,9 +4,9 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
-const TEST = true
+const TEST = true // выставить false, подключает генерилку и вывод в консоль, потом можно будет удалить вместе со строками где используется
 
-const testPhotos = function () {
+const testPhotos = function () { // генерилка фоток ВНИМАНИЕ!!!! с сервера ожидаю данные с такими же названиями полей
     const src = `https://unsplash.it/${Math.floor(Math.random() * 1000) + 200}/${Math.floor(Math.random() * 1000) + 200}?image=${Math.floor(Math.random() * 100) + 1}`
     return {
         title: `Photo${Math.floor(Math.random() * 100) + 1}`,
@@ -16,11 +16,11 @@ const testPhotos = function () {
     }
 }
 
-axios.defaults.baseURL = 'http://httpbin.org/'
+axios.defaults.baseURL = 'http://httpbin.org/' // заменить на домен или неизменяймую часть апи, для относительного адреса просто удалить
 
-const API = {
-    getPhotos: 'get',
-    deletePhoto: 'get'
+const API = { // здесь вместо get вписать часть адреса соответствующее запросу
+    getPhotos: 'get', // получение фоток, как парамет передаю number - индекс страницы, при первой загрузке 0, ожидаю response.data.photos
+    deletePhoto: 'get' // удаление фотки, параметр name - имя фотки, ожидаю response.data.success
 }
 
 const store = new Vuex.Store({
